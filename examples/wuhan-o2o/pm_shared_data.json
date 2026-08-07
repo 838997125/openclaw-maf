@@ -1,0 +1,126 @@
+{
+  "task": "武汉医药O2O市场调研",
+  "created_at": "2026-08-07",
+  "ssot_version": "1.0",
+  "ssot_status": "active",
+  "client_context": {
+    "online_stores": 30,
+    "offline_stores": 20,
+    "target": "武汉全域13区O2O覆盖"
+  },
+  "l1_outputs_status": {
+    "l1_1_market_size": "passed",
+    "l1_2_competitive": "passed",
+    "l1_3_user_persona": "passed",
+    "l1_4_compliance": "passed",
+    "l1_5_logistics": "passed",
+    "l1_6_finance": "rejected_by_checker_recalculate_in_l2_3",
+    "l1_checker": "completed"
+  },
+  "ssot": {
+    "population": {
+      "wuhan_permanent_2024": "1380.91万",
+      "wuhan_urban_2024": "1173.77万",
+      "wuhan_urbanization_rate": "85.0%",
+      "wuhan_60plus_ratio": "17.2% (七普常住)",
+      "wuhan_60plus_household": "230.43万 (24.08%户籍)",
+      "wuhan_disposable_income_urban_2024": "64346元",
+      "wuhan_gdp_2024": "21106亿元"
+    },
+    "pharmacies": {
+      "wuhan_pharmacy_count_2025": "5800家 (5500-6000区间中值)",
+      "wuhan_medical_insurance_pharmacy": "约5000家 (定点率85-88%)",
+      "wuhan_chain_rate_2025": "67%",
+      "national_chain_rate_2025": "60%",
+      "hubei_pharmacy_count_2025": "23500家",
+      "national_pharmacy_count_2025q4": "68万家"
+    },
+    "market_size": {
+      "wuhan_o2o_pharma_gmv_narrow_2025": "6亿元 (药品窄口径)",
+      "wuhan_o2o_health_gmv_wide_2025": "22亿元 (大健康宽口径)",
+      "wuhan_offline_pharma_gmv_2025": "106亿元 (实体药店全渠道含O2O不含B2C)",
+      "wuhan_o2o_pharma_gmv_narrow_2028e": "13亿元 (CAGR 29%)",
+      "wuhan_o2o_health_gmv_wide_2028e": "45亿元 (CAGR 27%)",
+      "national_o2o_pharma_gmv_narrow_2025": "390亿",
+      "national_o2o_health_gmv_wide_2025": "1500亿"
+    },
+    "orders_users": {
+      "wuhan_o2o_orders_narrow_2025": "1300万单",
+      "wuhan_o2o_orders_wide_2025": "3500万单",
+      "wuhan_o2o_orders_narrow_2028e": "2800万单",
+      "wuhan_o2o_orders_wide_2028e": "6500万单",
+      "wuhan_o2o_active_users_2025": "350万",
+      "wuhan_o2o_active_users_2028e": "550万",
+      "wuhan_o2o_penetration_urban_2025": "30%",
+      "wuhan_o2o_penetration_urban_2028e": "45%",
+      "orders_per_active_user_year_2025": "10单",
+      "orders_per_active_user_year_2028e": "12单",
+      "monthly_repurchase_rate_2025": "35%",
+      "monthly_repurchase_rate_2028e": "45%"
+    },
+    "aov": {
+      "o2o_pharma_aov_2025": "45元 (纯药品)",
+      "o2o_pharma_aov_2028e": "52元",
+      "o2o_health_aov_2025": "62元 (大健康综合)",
+      "o2o_health_aov_2028e": "72元",
+      "offline_aov_2025": "70元",
+      "medical_insurance_premium": "+47% (医保订单vs自费)"
+    },
+    "platforms": {
+      "meituan_share_2025": "70%",
+      "eleme_share_2025": "18%",
+      "jd_daojia_share_2025": "8%",
+      "meituan_share_2028e": "60%",
+      "eleme_share_2028e": "20%",
+      "jd_share_2028e": "15%",
+      "platform_commission_otc_2025": "18-22%",
+      "platform_commission_rx_2025": "12-15%",
+      "platform_commission_otc_2028e": "15-20%",
+      "platform_commission_rx_2028e": "10-13%"
+    },
+    "margins": {
+      "o2o_gross_margin_otc": "28-32%",
+      "o2o_gross_margin_rx": "18-22%",
+      "offline_industry_gross_margin": "33-40% (益丰40%/大参林34%/老百姓33%)"
+    },
+    "compliance_metrics": {
+      "rx_share_in_o2o_2024": "40.5%",
+      "rx_share_in_o2o_2028e": "50%",
+      "night_orders_share": "35%",
+      "o2o_share_of_offline_pharma_2024": "6.9%",
+      "o2o_share_of_offline_pharma_2028e": "15%",
+      "top10_chain_concentration_2024h1": "64.1%"
+    },
+    "client_2028_target": {
+      "total_nodes": "70个 (S5+A12+B20+C15+P18)",
+      "p_warehouses": "18个 (主城12+远郊6)",
+      "offline_stores": "52家 (自建30+加盟22)",
+      "online_stores": "50家",
+      "annual_gmv_incl_tax_subsidy": "10亿元 (区间8-12亿)",
+      "market_share_wide": "22%",
+      "revenue_excl_tax": "约8.8亿元",
+      "per_node_annual_gmv": "1400万 (月均117万)",
+      "p_warehouse_monthly_gmv": "100万 (日330单×50元×30天)",
+      "p_warehouse_service_radius_km": "5公里",
+      "aov_comprehensive_2028": "72元",
+      "30min_coverage_2028": "92%",
+      "60min_coverage_2028": "100%"
+    },
+    "investment": {
+      "capex_total": "7500万元 (区间6500-8000)",
+      "startup_opex_first_2_years": "3500万元",
+      "total_funding_3_years": "1.7亿元 (CapEx+3年OpEx)",
+      "note": "L1.6的7550万只够CapEx+部分OpEx，不足以烧出10亿GMV；L1.5的9590万CapEx偏重，P仓30个过多压减至18个"
+    },
+    "profitability_warning": "按10亿GMV/2028测算：费销比17%、毛利率25%、净亏或打平为合理预期，不要承诺2028盈利；单仓P&L在月GMV 100万时实际微亏，需靠规模效应+私域复购+高毛利保健品类拉升",
+    "conflicts_arbitrated": [
+      "GMV: L1.1=23亿(宽口径下沿采信) / L1.3=45-55亿(不采信) / L1.6反推170-260亿(不采信) → 采信22亿宽/6亿窄",
+      "药店数: L1.1=7500-8500(偏高) / L1.2=4800(2019旧数据) / L1.6=4200-4500(偏低) → 采信5800",
+      "连锁率: L1.1=60-65% / L1.2/L1.6=73%(2019值) → 采信67%",
+      "2028节点/GMV: L1.5=89节点/7.2亿 vs L1.6=85节点/25.8亿 → 采信70节点/10亿",
+      "客单价: L1.1=65(综合) / L1.3=80-90(线下) / L1.6=45(纯药品) → 分层采信45/62/70",
+      "订单量: L1.1=3300万(宽口径) / L1.3=5000-6000万(偏高) → 采信1300万窄/3500万宽"
+    ]
+  },
+  "modules": {}
+}

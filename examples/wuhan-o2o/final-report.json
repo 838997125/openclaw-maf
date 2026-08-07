@@ -1,0 +1,51 @@
+{
+  "report_title": "武汉地区医药O2O市场调研与全域覆盖战略报告",
+  "client": "武汉某医药电商公司(线上30店+线下20店)",
+  "date": "2026-08-07",
+  "ssot_version": "1.0",
+  "market": {
+    "wuhan_o2o_pharma_gmv_narrow_2025": "6亿元 (药品窄口径)",
+    "wuhan_o2o_health_gmv_wide_2025": "22亿元 (大健康宽口径)",
+    "wuhan_offline_pharma_gmv_2025": "106亿元 (实体药店全渠道含O2O不含B2C)",
+    "wuhan_o2o_pharma_gmv_narrow_2028e": "13亿元 (CAGR 29%)",
+    "wuhan_o2o_health_gmv_wide_2028e": "45亿元 (CAGR 27%)",
+    "national_o2o_pharma_gmv_narrow_2025": "390亿",
+    "national_o2o_health_gmv_wide_2025": "1500亿"
+  },
+  "client_2028_target": {
+    "total_nodes": "70个 (S5+A12+B20+C15+P18)",
+    "p_warehouses": "18个 (主城12+远郊6)",
+    "offline_stores": "52家 (自建30+加盟22)",
+    "online_stores": "50家",
+    "annual_gmv_incl_tax_subsidy": "10亿元 (区间8-12亿)",
+    "market_share_wide": "22%",
+    "revenue_excl_tax": "约8.8亿元",
+    "per_node_annual_gmv": "1400万 (月均117万)",
+    "p_warehouse_monthly_gmv": "100万 (日330单×50元×30天)",
+    "p_warehouse_service_radius_km": "5公里",
+    "aov_comprehensive_2028": "72元",
+    "30min_coverage_2028": "92%",
+    "60min_coverage_2028": "100%"
+  },
+  "investment": {
+    "capex_total": "7500万元 (区间6500-8000)",
+    "startup_opex_first_2_years": "3500万元",
+    "total_funding_3_years": "1.7亿元 (CapEx+3年OpEx)",
+    "note": "L1.6的7550万只够CapEx+部分OpEx，不足以烧出10亿GMV；L1.5的9590万CapEx偏重，P仓30个过多压减至18个"
+  },
+  "modules_completed": 10,
+  "modules_rejected": 1,
+  "modules_remade": 1,
+  "digital_conflicts_arbitrated": 6,
+  "final_recommendations_count": 5,
+  "key_risks_top3": [
+    "平台佣金率",
+    "O2O订单密度",
+    "医保订单占比"
+  ],
+  "files": {
+    "markdown": "/root/.openclaw/workspace-pm/outputs/wuhan-o2o/武汉医药O2O市场调研与全域覆盖战略报告.md",
+    "ssot": "/root/.openclaw/workspace-pm/outputs/wuhan-o2o/pm_shared_data.json",
+    "modules_dir": "/root/.openclaw/workspace-pm/outputs/wuhan-o2o/modules"
+  }
+}
