@@ -1,0 +1,368 @@
+{
+  "task_id": "wuhan-o2o-mea-2026-08-10",
+  "task_name": "武汉医药O2O市场调研分析（MEA试点）",
+  "created_at": "2026-08-10T10:55:00+08:00",
+  "framework_version": "MAF v2.3 + MEA (LongHorizon-Harness inspired)",
+  "output_root": "/root/.openclaw/workspace-pm/outputs/wuhan-o2o-mea-pilot",
+  "ssot": {
+    "_comment": "以下为PM在Phase 0预先采集的anchor数字，所有Executor必须以这些数字为准，禁止自行估算后覆盖。如发现新数据需要更新，请写入proposed_ssot字段由Auditor裁定。",
+    "wuhan": {
+      "population_2025_wan": 1386.19,
+      "population_2024_wan": 1380.91,
+      "urbanization_rate_2025_pct": 85.22,
+      "gdp_2025_yi": 22147.35,
+      "gdp_2024_yi": 21106.23,
+      "gdp_per_capita_2024_yuan": 153037,
+      "social_retail_2025_yi": 9013.96,
+      "online_retail_growth_2025_pct": 12.2,
+      "online_retail_share_of_limited_2025_pct": 36.1,
+      "health_institutions_2025": 6725,
+      "hospital_beds_2025_wan": 10.56,
+      "health_workers_2025_wan": 14.45,
+      "doctors_2025_wan": 5.41,
+      "nurses_2025_wan": 6.97,
+      "tertiary_hospitals_2025": 84,
+      "tertA_hospitals_2025": 31,
+      "chronic_special_disease_pharmacies_2024": 29,
+      "chronic_special_disease_categories_2024": 37,
+      "medical_insurance_premium_2025_yi": 1069.56
+    },
+    "hubei": {
+      "population_2024_wan": 5834,
+      "gdp_2024_yi": 60012.97
+    },
+    "china_pharmacy_retail": {
+      "total_pharmacy_sales_2024_yi": 6500,
+      "pharmacy_sales_growth_2024_pct": 1.3,
+      "total_pharmacies_2024_wan": 68.37,
+      "chain_rate_2024_pct": 57.04,
+      "chain_stores_2024_wan": 39.0,
+      "independent_stores_2024_wan": 29.37,
+      "chain_enterprises_2024": 6607,
+      "licensed_pharmacists_2024_wan": 81.43,
+      "pharmacists_per_10k_2024": 5.8,
+      "pharmacists_in_retail_2024_wan": 74.14,
+      "total_drug_circulation_sales_2024_yi": 29470,
+      "wholesale_2024_yi": 22970,
+      "avg_gross_margin_pct": 7.2,
+      "avg_expense_ratio_pct": 6.2,
+      "avg_net_margin_pct": 1.4
+    },
+    "china_online_pharma": {
+      "medical_ecommerce_total_2024_yi": 2488,
+      "third_party_platform_gmv_2024_yi": 1095,
+      "b2c_sales_2024_yi": 129,
+      "b2c_avg_order_value_2024_yuan": 130,
+      "b2c_avg_items_per_order": 3,
+      "b2c_orders_2024_wan": 15387,
+      "third_party_orders_2024_wan": 15622,
+      "b2c_cost_ratio_pct": 17.5,
+      "b2b_cost_ratio_pct": 6.9,
+      "online_pharmacy_sales_2025_yi": 1005.56,
+      "online_pharmacy_growth_2025_pct": 0.2,
+      "online_b2c_share_pct": 56,
+      "online_o2o_share_pct": 34,
+      "online_internet_hospital_share_pct": 3,
+      "online_rx_share_in_b2c_pct": 60.5
+    },
+    "china_o2o_pharma": {
+      "o2o_market_2023_yi": 124,
+      "o2o_growth_2023_pct": 22,
+      "o2o_direct_delivery_2023_yi": 90,
+      "o2o_express_2023_yi": 34,
+      "o2o_jan_oct_2024_yi": 80,
+      "o2o_growth_jan_oct_2024_pct": 10.9,
+      "o2o_direct_share_of_offline_pct_oct_2024": 4.1,
+      "o2o_rx_share_2024_pct": 39.9,
+      "o2o_market_2024_yi_estimate": 1200,
+      "o2o_growth_2024_pct": 35.2,
+      "o2o_market_jul_2025_yi": 254.2,
+      "o2o_growth_jul_2025_pct": 30.8,
+      "o2o_direct_share_jul_2025_pct": 8.8,
+      "o2o_market_aug_2025_yi": 291,
+      "o2o_growth_aug_2025_pct": 29.6,
+      "o2o_express_growth_aug_2025_pct": 53.1,
+      "o2o_rx_growth_aug_2025_pct": 26.2,
+      "o2o_otc_growth_aug_2025_pct": 19.7,
+      "meituan_pharma_gmv_2024_yi": 500,
+      "meituan_pharmacies_covered_wan": 25,
+      "meituan_night_order_share_pct": 35,
+      "meituan_night_growth_2024_pct": 40,
+      "meituan_3yr_cagr_pct": 38,
+      "meituan_medical_insurance_cities_2024": 120,
+      "meituan_medical_insurance_pharmacies_wan": 8,
+      "jddj_pharmacies_q1_2025_wan": 15,
+      "jddj_medical_insurance_pharmacies_2024_q4": 3000,
+      "jddj_medical_insurance_cities_2024_q4": 18,
+      "pdd_pharma_gmv_2024_yi": 700,
+      "jd_health_revenue_2024_yi": 582,
+      "jd_health_growth_2024_pct": 8.6,
+      "ali_health_revenue_fy2024_yi": 306,
+      "meituan_o2o_share_pct": 65,
+      "online_medical_insurance_cities_2026_apr": 40,
+      "medical_insurance_order_aov_uplift_pct": 47
+    },
+    "industry_baseline": {
+      "_comment": "用于子agent自检三项（市占率/单店产能/投资回报）的行业基准",
+      "top10_chain_national_share_pct": 30,
+      "chain_density_per_10k_people": 4.93,
+      "single_store_annual_revenue_wan_typical": 80,
+      "single_store_monthly_gmv_o2o_wan_typical_range": [
+        3,
+        15
+      ],
+      "rx_gross_margin_pct": 25,
+      "otc_gross_margin_pct": 40,
+      "healthcare_gross_margin_pct": 55,
+      "payback_period_years_range": [
+        2,
+        4
+      ]
+    }
+  },
+  "wuhan_pharmacy_estimate": {
+    "total_pharmacies": 6700,
+    "range": [
+      6300,
+      7000
+    ],
+    "chain_pharmacies": 4000,
+    "chain_direct": 2900,
+    "chain_franchise": 1100,
+    "independent": 2700,
+    "chain_rate_range": "58%-62%",
+    "o2o_active_pharmacies": 4100,
+    "o2o_active_range": [
+      3800,
+      4300
+    ],
+    "o2o_penetration": "61%",
+    "wuhan_o2o_gmv_2024_yi": 20.0,
+    "wuhan_o2o_gmv_2024_range": [
+      18,
+      22
+    ],
+    "wuhan_o2o_gmv_2025_yi": 26.0,
+    "wuhan_o2o_gmv_2025_range": [
+      25,
+      30
+    ],
+    "single_store_monthly_gmv_wan": 4.2,
+    "wuhan_market_share": {
+      "meituan": [
+        60,
+        68
+      ],
+      "eleme": [
+        18,
+        23
+      ],
+      "jddj": [
+        8,
+        11
+      ],
+      "other": [
+        3,
+        6
+      ]
+    }
+  },
+  "phases": {
+    "ssot_baseline": "completed",
+    "l1_modules": "completed",
+    "l2_consistency_check": "completed",
+    "l3_synthesis": "completed",
+    "l4_final_audit": "completed",
+    "delivered": true
+  },
+  "requirements": {
+    "M1_market_size": {
+      "title": "武汉医药O2O市场规模与需求分析",
+      "role": "marketing-china-ecommerce-operator",
+      "status": "pending",
+      "output_path": "modules/M1-market-size.md",
+      "acceptance_criteria": [
+        "≥5000字，结构完整（市场规模/需求结构/区域分布/增长驱动/预测）",
+        "武汉药店总数基于人口密度+AnySearch验证，区间偏差≤15%",
+        "武汉O2O GMV必须从全国O2O数据按城市分级反推，不得直接估算",
+        "每个数字附来源URL+访问时间",
+        "结论与SSOT中hubei/wuhan宏观数据交叉一致",
+        "自检三项：市占率、单店产能、投资回报均在行业基准±50%以内"
+      ],
+      "evidence": null,
+      "history": []
+    },
+    "M2_competition": {
+      "title": "武汉医药O2O竞争格局",
+      "role": "product-trend-researcher",
+      "status": "pending",
+      "output_path": "modules/M2-competition.md",
+      "acceptance_criteria": [
+        "≥5000字，覆盖平台格局/连锁药店/DTP药房/互联网医院",
+        "美团/饿了么/京东到家在武汉的市占率给出区间+依据",
+        "至少识别10家武汉本地连锁/全国连锁在汉门店数",
+        "每个数字附来源URL+访问时间",
+        "市占率合计≤100%（含'其他'）",
+        "自检三项合规"
+      ],
+      "evidence": null,
+      "history": []
+    },
+    "M3_regulation": {
+      "title": "武汉医药O2O监管与合规分析",
+      "role": "healthcare-marketing-compliance",
+      "status": "pending",
+      "output_path": "modules/M3-regulation.md",
+      "acceptance_criteria": [
+        "≥4000字",
+        "覆盖处方药网售/医保线上支付/GSP/电子处方/执业药师/骑手配送药品合规",
+        "国家+湖北+武汉三级政策时间线，至少10份具体文件名+发文号+发布日期",
+        "明确哪些品类不能在O2O销售（毒麻精放等）",
+        "对武汉本地试点（医保线上支付/慢特病处方流转）有专门段落",
+        "每条结论引用具体法规条文URL"
+      ],
+      "evidence": null,
+      "history": []
+    },
+    "M4_supply_chain": {
+      "title": "武汉医药O2O供应链与履约",
+      "role": "supply-chain-route-optimizer",
+      "status": "pending",
+      "output_path": "modules/M4-supply-chain.md",
+      "acceptance_criteria": [
+        "≥4000字",
+        "覆盖30分钟履约半径、武汉三镇路网、冷链药品、夜间配送",
+        "前置仓/店仓一体/平台骑手三种模式对比",
+        "至少给出一个武汉重点区域（如光谷/汉口主城）的履约时效分析",
+        "每个数字附来源",
+        "自检三项合规"
+      ],
+      "evidence": null,
+      "history": []
+    },
+    "M5_consumer": {
+      "title": "武汉医药O2O消费者洞察",
+      "role": "design-ux-researcher",
+      "status": "pending",
+      "output_path": "modules/M5-consumer.md",
+      "acceptance_criteria": [
+        "≥4000字",
+        "用户画像（年龄/收入/急用药vs慢病/夜间场景/计生用品）",
+        "至少包含武汉本地消费者行为特征（如三镇差异/高校群体/老龄化社区）",
+        "决策路径：触达→下单→收货→复购",
+        "引用第三方用户调研报告或平台公开数据",
+        "自检三项合规"
+      ],
+      "evidence": null,
+      "history": []
+    },
+    "M6_finance": {
+      "title": "武汉医药O2O商业模式与财务测算",
+      "role": "finance-financial-forecaster",
+      "status": "pending",
+      "output_path": "modules/M6-finance.md",
+      "acceptance_criteria": [
+        "≥5000字",
+        "单店模型：投资/月GMV/毛利率/费用率/净利/回本周期",
+        "平台抽佣率/配送费/营销费用必须基于行业真实数据",
+        "三种业态对比：连锁直营O2O/单体加盟O2O/DTP药房",
+        "3年财务预测（乐观/中性/悲观三档）",
+        "GMV总量必须与M1的武汉O2O GMV一致（引用SSOT）",
+        "自检：单店月GMV 3-15万、回本2-4年，超出范围必须自我否决并重算"
+      ],
+      "evidence": null,
+      "history": []
+    },
+    "M7_digital": {
+      "title": "武汉医药O2O数字化与技术架构",
+      "role": "engineering-software-architect",
+      "status": "pending",
+      "output_path": "modules/M7-digital.md",
+      "acceptance_criteria": [
+        "≥4000字",
+        "覆盖电子处方流转/医保接口/中台架构/AI客服/药师审方系统",
+        "至少给出一个目标架构图（ASCII或mermaid）",
+        "数据安全与等保2.0/三级合规要求",
+        "AI应用场景：智能荐药/库存预测/骑手调度/审方辅助",
+        "引用具体技术供应商或开源方案",
+        "自检三项合规"
+      ],
+      "evidence": null,
+      "history": []
+    }
+  },
+  "audit_reports": [],
+  "unresolved_risks": [],
+  "metrics": {
+    "start_time": "2026-08-10T10:55:00+08:00",
+    "subagent_count": 0,
+    "total_rounds": 0,
+    "rework_count": {},
+    "tokens_estimate": 0
+  },
+  "l1_audit_status": {
+    "M1": {
+      "result": "PASS",
+      "rounds": 1,
+      "p0": 0,
+      "p1": 0,
+      "file": "modules/M1-market-size.md",
+      "audit": "audits/audit-M1-round-1.md"
+    },
+    "M2": {
+      "result": "PASS(conditional)",
+      "rounds": 2,
+      "p0": 0,
+      "file": "modules/M2-competition.md",
+      "audit": "audits/audit-M2-round-2.md",
+      "note": "市占率三档情景=100%"
+    },
+    "M3": {
+      "result": "PASS",
+      "rounds": 2,
+      "p0": 0,
+      "file": "modules/M3-regulation.md",
+      "audit": "audits/audit-M3-round-2.md",
+      "note": "R1审计自造国办发8号文号被R2审计独立证伪;残留P1:商务部文号/自检段禁用词字符串"
+    },
+    "M4": {
+      "result": "PASS",
+      "rounds": 2,
+      "p0": 0,
+      "file": "modules/M4-supply-chain.md",
+      "audit": "audits/audit-M4-round-2.md",
+      "note": "1 P1非阻塞:京东健康490城URL不匹配"
+    },
+    "M5": {
+      "result": "PASS",
+      "rounds": 2,
+      "p0": 0,
+      "file": "modules/M5-consumer.md",
+      "audit": "audits/audit-M5-round-2.md",
+      "note": "老龄化改户籍24.08%;4 P2引用层小瑕"
+    },
+    "M6": {
+      "result": "PASS",
+      "rounds": 2,
+      "p0": 0,
+      "file": "modules/M6-finance.md",
+      "audit": "audits/audit-M6-round-2.md",
+      "note": "R1平台营业利润虚高3.85倍已修;python重算60+单元格一致"
+    },
+    "M7": {
+      "result": "PASS",
+      "rounds": 2,
+      "p0": 0,
+      "file": "modules/M7-digital.md",
+      "audit": "audits/audit-M7-round-2.md",
+      "note": "R1 AI替代药师审方红线已修;P1-a:处方留存年限医疗侧15年/零售侧5年待L2统一"
+    }
+  },
+  "final_deliverable": {
+    "report_md": "final/wuhan-o2o-report.md",
+    "report_chinese_chars": 15182,
+    "final_audit": "audits/audit-L4-final.md",
+    "verdict": "PASS, deliverable",
+    "p0_count": 0
+  }
+}

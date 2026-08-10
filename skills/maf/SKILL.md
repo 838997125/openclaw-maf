@@ -1,11 +1,11 @@
 ---
 name: maf
-description: 多智能体协作框架 v2.2。当用户说"启动多智能体"、"多智能体协作"、"/maf"、"/multi-agent"时激活。七角色架构（Orchestrator/Planner/Research/Execute/Reviewer/Tools/User）+ 18步全流程 + 黑板机制 + 精准返工 + 独立审查。半自动模式。v2.2：强制write落盘验证 + 预-spawn SSOT基线 + 子agent自检 + 心跳进度 + 续补三段式。
+description: 多智能体协作框架 v2.3。当用户说"启动多智能体"、"多智能体协作"、"/maf"、"/multi-agent"时激活。七角色架构（Orchestrator/Planner/Research/Execute/Reviewer/Tools/User）+ 18步全流程 + 黑板机制 + 精准返工 + 独立审查。半自动模式。v2.3：MEA 三权分立（Manager-Executor-Auditor）+ 独立 fresh-context Auditor + 审计门禁（无审计证据不标完成）+ L1→L2 强制跨模块数字一致性 checker + task-state 唯一跨轮记忆。
 ---
 
-# MAF — Multi-Agent Framework v2.2
+# MAF — Multi-Agent Framework v2.3
 
-> **版本**：2.2 | **更新日期**：2026-08-07（基于武汉医药O2O战略报告实战复盘）
+> **版本**：2.3 | **更新日期**：2026-08-10（基于 LongHorizon-Harness 论文 MEA 模式 + 武汉医药O2O市场调研 MEA 试点实战复盘）
 > **执行模式**：半自动（用户确认 DAG 执行计划后再调度执行）
 > **调用路径**：OpenClaw sessions_spawn（路径 A）
 > **文件权限**：可增改查所有文件，删除需用户确认
@@ -56,6 +56,113 @@ description: 多智能体协作框架 v2.2。当用户说"启动多智能体"、
 - 写入 `pm_shared_data.json.ssot` 字段
 - 后续所有 execute agent 的 prompt 中必须包含 "## 数字铁律（SSOT）" 段落，列出 anchor 数字并声明"禁止自行计算，表外数字必须先请 PM 更新黑板"
 - L1 全部完成后 spawn 独立 checker（如 v2.1 已有），但 v2.2 要求 checker 同时验证"子 agent 是否真的引用了 SSOT"
+
+---
+
+## v2.3 核心升级：MEA 三权分立（2026-08-10 武汉医药O2O MEA 试点落地）
+
+### 理论来源
+LongHorizon-Harness（阿里高德 DreamX，arXiv:2608.01964）证明：长程任务失败的根因不是模型能力不足，而是**任务状态管理失败**——上下文腐烂、状态漂移、未经验证的前提进入记录。其方案是把传统 Agent 的"一个会话自己跑、自己评估自己"拆成三个角色：
+
+| 角色 | MAF 映射 | 权限 | 上下文 |
+|------|---------|------|--------|
+| **Manager** | PM Orchestrator（本 agent） | 派下一轮子任务合同；**不能直接写业务文件/改 requirement 状态** | 长期，累积审计报告 |
+| **Executor** | 业务专家 sub-agent（从 215 角色库匹配） | **唯一能写 modules/*.md 业务文件**；写完即弃 raw 上下文 | 每轮 fresh isolated context，跑完丢弃 |
+| **Auditor** | `testing-reality-checker`（现实检验者）独立 sub-agent | **唯一能把 requirement 标 completed**；只读业务文件 + 验收标准；写 audits/*.md | fresh isolated context，**看不到 Executor 的推理过程** |
+
+### 四原则（必须遵守）
+
+1. **P1 动态分解、目标固定**：Manager 每轮读审计通过的 task-state，派下一个子任务合同（目标+验收标准+边界+依赖证据）。
+2. **P2 审计落地的进度（审计门禁）**：**没有 Auditor 签字的审计证据，任何 requirement 不得标 completed**。Executor 自报"已完成"不算数。这是 MEA 的灵魂。
+3. **P3 轮内执行、上下文隔离**：每个 Executor 在独立 isolated sub-agent 里跑，raw 轨迹跑完丢弃；跨轮只传压缩审计报告 + 黑板 SSOT。dense 的工具输出/中间推理不污染长期记忆。
+4. **P4 出错可重置但不失忆**：Executor 的错误要么被下一轮 Auditor 揭穿、要么压根没进入 task-state，错误被关在当轮；审计报告区分"仍可信"与"需修复"。
+
+### Auditor 铁律（与 v2.2 Reviewer 的关键区别）
+
+- **独立 sub-agent**：Auditor 不是 PM 自己，是用 `sessions_spawn` 另起的一个 isolated sub-agent（角色 `testing-reality-checker`，备份 `testing-evidence-collector`）。
+- **fresh context + 信息隔离**：Auditor 的 prompt **只给验收标准 + 待审文件路径 + 黑板 SSOT**，**不给 Executor 的 system prompt、推理过程、raw 输出**。它像外部审计一样自己读文件、自己 grep、自己用 python/web_fetch 验证。
+- **默认结论 NEEDS WORK**：Auditor 默认为"不通过"，除非有压倒性证据证明通过。
+- **只读完整性**：Auditor 不得修改 modules/*.md 业务文件，只能写 audits/audit-<module>-round-<n>.md。若 Auditor 改了受保护业务文件，审计报告标记"完整性违规"，无效。
+- **必须引用原文**：审计通过时必须引用输出中的具体段落（含行号），否则审核无效（沿用 AGENTS.md v3）。
+- **打回透明**：每打回一次 PM 立即向用户汇报：模块名/第几次/具体问题/修改建议。
+
+### 标准执行流程（MEA 增强版）
+
+```
+Phase 0  SSOT 基线：PM 用 AnySearch 预采 anchor 数字 → 写 pm_shared_data.json
+         （所有数字型 Executor prompt 顶部贴"## 数字铁律 SSOT"段，禁止自行重算 anchor）
+    ↓
+L1 业务模块（分批，≤3 并发）：
+  for each module:
+    ① Executor（业务专家）fresh context 写 modules/M*.md，增量 write，跑完即弃
+    ② 【强制】立即 spawn Auditor（testing-reality-checker），fresh context
+       只拿验收标准+文件路径+SSOT，独立读文件/grep/python验算/web_fetch抽查URL
+       → 写 audits/audit-M*-round-N.md
+       → 签字：✅ completed / ❌ 打回（列P0/P1，Executor 返工，raw context 丢弃重来）
+    ③ 打回不自动通过；同一模块返工不限硬次数（以质量为准），
+       但向用户透明汇报每一次；反复同类问题升级人工
+    ↓
+L2 【强制节点】跨模块数字一致性 checker（testing-evidence-collector）：
+  - diff 所有模块的跨模块数字（药店数/GMV/市占率/毛利率/客单价/口径/留存年限…）
+  - 输出冲突清单：P0（直接数字矛盾，必须返工）/ P1（口径不一致，L3前修订）/ P2（表述瑕疵）
+  - 这一步不可跳过——上次同题报告就是栽在 M1药店4800 vs 其他8500、GMV 23亿vs55亿
+    ↓
+L3 综合汇总（project-manager-senior）：
+  - 只读审计通过的 modules + SSOT + L2 冲突清单
+  - L2 的 P1 正确口径作为硬约束写进 L3 prompt，终稿统一采用
+  - 写 final/<report>.md，增量 write
+    ↓
+L4 终审 Auditor（fresh context 新实例）：
+  - 独立审终稿：验收逐条核对 + 财务算术 python 重算 + 4项口径专项验证
+    + 战略建议可执行性评级 + 合规红线 grep + 回查模块忠实度
+  - 签字可交付 / 打回 L3
+    ↓
+交付：终稿 .md + 机读摘要 .json（双格式，SOUL 规则8）
+```
+
+### task-state：唯一跨轮记忆
+
+黑板 `pm_shared_data.json` 增加结构化任务状态（只有 Auditor 能写 status=completed）：
+
+```json
+{
+  "phases": {"l1_modules":"in_progress", "l2_consistency_check":"pending", ...},
+  "requirements": {
+    "M1_market_size": {
+      "title": "...", "role": "...", "status": "pending|in_progress|completed|blocked|untrusted",
+      "output_path": "modules/M1.md",
+      "acceptance_criteria": ["..."],
+      "evidence": "audits/audit-M1-round-1.md#结论",
+      "history": [{"round":1,"result":"pass|fail","issues":[...],"auditor":"..."}]
+    }
+  },
+  "ssot": { /* anchor 数字，Executor 只读 */ },
+  "audit_reports": [...],
+  "unresolved_risks": [...]
+}
+```
+
+写入权限：Executor 只写 modules/；Auditor 写 audits/ 且只能更新 requirement.status/evidence；Manager（PM）只更新 phases，**不能自己把 requirement 标 completed**。
+
+### 角色选用
+
+- **Auditor 主角色**：`testing-reality-checker`（现实检验者）——"默认 NEEDS WORK，要求压倒性证据才认定就绪"，与 MEA Auditor 哲学 1:1 对应。已在 215 角色库中，**无需新增**。
+- **Auditor 备份/证据链**：`testing-evidence-collector`（证据收集者），用于 L2 跨模块一致性 checker。
+- **Executor**：按模块主题从 215 角色库匹配业务专家（市场/财务/合规/供应链等）。
+- **L3 汇总**：`project-manager-senior`（高级项目经理）。
+
+### 试点实测结果（2026-08-10 武汉医药O2O，7 模块）
+
+- 7 个业务模块 → 15 份独立审计报告 → 6 次模块返工 → L4 终审 P0=0 交付
+- **独立 Auditor 抓出、PM 自审极可能放过的硬伤**：
+  - M6 财务：平台营业利润把"GMV×8%"当利润（应为平台收入×8%），**虚高 3.85 倍**——与上次 GMV 虚高 3.6 倍同类错误
+  - M7 技术：设计了"低风险处方 AI 自动通过"，**违反药师审方法定环节**的合规红线
+  - M3 合规：4 个国家/省级法规文号错误或无法证实（含一轮审计自己幻觉出的文号，被二轮独立审计证伪）
+  - M2 竞争：市占率区间中位合计 107.5%、上限 130%
+  - M4 供应链：18 类武汉本地数字无真实来源
+  - M5 消费者：老龄化比例用常住人口估算偏差（实际户籍 60+ 为 24.08%）
+- **L2 跨模块一致性：0 个 P0 冲突**（对比上次同题报告的药店数/GMV 严重冲突，SSOT 前置 + 独立 checker 根治）
+- 结论：**MEA 模式值得作为长程/数字敏感/合规敏感任务的默认执行模式**。代价是多了审计轮次，收益是财务虚高、合规红线、法规文号、跨模块数字冲突这些"灯下黑"问题被独立 fresh-context 审计拦住。
 
 ---
 
@@ -398,5 +505,6 @@ Reviewer 审查
 | 1.0 | 2026-05-27 | 初始版本 |
 | 1.1 | 2026-05-27 | 双触发词 + 半自动模式 + 质量审核循环（3次打回） |
 | **2.0** | **2026-08-05** | **七角色架构 + 18步全流程 + 黑板机制 + 独立Reviewer + 精准返工 + 必要性门控 + 5条原则 + 8坑防护 + 5轮打回** |
+| **2.3** | **2026-08-10** | **MEA 三权分立（LongHorizon-Harness 启发）：Manager/Executor/Auditor 权限分离；独立 fresh-context Auditor（testing-reality-checker），看不到 Executor 推理；审计门禁（无审计证据不标 completed）；只读完整性保护；task-state 唯一跨轮记忆（只有 Auditor 能标 completed）；L1→L2 强制跨模块数字一致性 checker（testing-evidence-collector）；Executor 上下文跑完即弃；武汉医药O2O MEA 试点验证（7模块/15审计/6返工/L4终审P0=0）** |
 | **2.2** | **2026-08-07** | **武汉O2O实战复盘：强制 write 落盘+三件套验证、预-spawn SSOT 基线、子agent自检三项、续补三段式、心跳进度、绝对路径硬约束、完成即审 SOP、数字一致性预校验** |
 | **2.1** | **2026-08-05** | **实战复盘修复：强制文件落盘 + 黑板gate + 即时进度推送 + 完成事件即续跑 + Reviewer问题必须真返工** |
