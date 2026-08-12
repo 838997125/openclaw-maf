@@ -1,11 +1,11 @@
 ---
 name: maf
-description: 多智能体协作框架 v2.3。当用户说"启动多智能体"、"多智能体协作"、"/maf"、"/multi-agent"时激活。七角色架构（Orchestrator/Planner/Research/Execute/Reviewer/Tools/User）+ 18步全流程 + 黑板机制 + 精准返工 + 独立审查。半自动模式。v2.3：MEA 三权分立（Manager-Executor-Auditor）+ 独立 fresh-context Auditor + 审计门禁（无审计证据不标完成）+ L1→L2 强制跨模块数字一致性 checker + task-state 唯一跨轮记忆。
+description: 多智能体协作框架 v2.3.1。当用户说"启动多智能体"、"多智能体协作"、"/maf"、"/multi-agent"时激活。七角色架构（Orchestrator/Planner/Research/Execute/Reviewer/Tools/User）+ 18步全流程 + 黑板机制 + 精准返工 + 独立审查。半自动模式。v2.3：MEA 三权分立（Manager-Executor-Auditor）+ 独立 fresh-context Auditor + 审计门禁（无审计证据不标完成）+ L1→L2 强制跨模块数字一致性 checker + task-state 唯一跨轮记忆。v2.3.1：L4 必须独立 sub-agent（PM 不自审）、不模型分流、大文件分块读防溢出、并发 3→2。
 ---
 
 # MAF — Multi-Agent Framework v2.3
 
-> **版本**：2.3 | **更新日期**：2026-08-10（基于 LongHorizon-Harness 论文 MEA 模式 + 武汉医药O2O市场调研 MEA 试点实战复盘）
+> **版本**：2.3.1 | **更新日期**：2026-08-12（实战复盘：L4 独立审核 + 防溢出 + 不模型分流）
 > **执行模式**：半自动（用户确认 DAG 执行计划后再调度执行）
 > **调用路径**：OpenClaw sessions_spawn（路径 A）
 > **文件权限**：可增改查所有文件，删除需用户确认
@@ -30,7 +30,7 @@ description: 多智能体协作框架 v2.3。当用户说"启动多智能体"、
 
 ```
 ## 输出要求（强制）
-1. 用 write 工具把完整报告写到绝对路径：$HOME/.openclaw/workspace-pm/outputs/<task>/modules/<TASK_ID>.md
+1. 用 write 工具把完整报告写到绝对路径：/root/.openclaw/workspace-pm/outputs/<task>/modules/<TASK_ID>.md
 2. 写作过程：每写完一章立即 write 一次（增量写），不要等到最后一次性输出
 3. 完成后在消息中只回复三行：\   - 已保存：<绝对路径>
    - 字节数：<wc -c 实际值>
@@ -112,13 +112,37 @@ L3 综合汇总（project-manager-senior）：
   - L2 的 P1 正确口径作为硬约束写进 L3 prompt，终稿统一采用
   - 写 final/<report>.md，增量 write
     ↓
-L4 终审 Auditor（fresh context 新实例）：
+L4 终审 Auditor（fresh context 新实例，**必须独立 sub-agent，PM 不得自审**）：
   - 独立审终稿：验收逐条核对 + 财务算术 python 重算 + 4项口径专项验证
     + 战略建议可执行性评级 + 合规红线 grep + 回查模块忠实度
+  - 签字可交付 / 打回 L3
+  - **防溢出硬规则**（终稿通常 >100KB，不能一次 read 全文）：
+    1. 先用 `exec`（wc/grep/python）核对结构、字数、数字 diff，不靠肉眼读全文
+    2. 需要读正文时用 `read` 的 offset/limit **分块读**，单次 ≤30KB
+    3. 严禁一次性 read 整个终稿.md
+    4. 合规红线用 `grep -nE` 扫描，定位后再读上下文
   - 签字可交付 / 打回 L3
     ↓
 交付：终稿 .md + 机读摘要 .json（双格式，SOUL 规则8）
 ```
+
+### ⚠️ 三条 MEA 硬底线（2026-08-12 实战复盘新增）
+
+1. **L4 必须派独立审核 sub-agent，PM 不能既当汇总者又当裁判**。
+   L3 是 PM 自己拼的终稿，如果 L4 还是 PM 自己审，等于自己给自己打分，违反 MEA 审计独立原则。
+   任何情况下（赶时间、token 紧、文件大）都不能省略独立 L4。文件大就用分块读+脚本核对。
+
+2. **不做模型分流（不按任务类型切模型）**。
+   所有 Executor / Auditor / Checker 统一继承 PM 配置的默认模型，不在 spawn 时按"任务难度"切模型。
+   教训：复杂任务切弱模型导致输出截断/质量崩坏；模型质量应通过 OpenClaw 全局配置管理，MAF 不做隐式分流。
+   确实需要换模型时，必须在需求确认单里显式告诉用户、得到确认。
+
+3. **防大文件溢出（OOM/截断）**。
+   - 单个子任务控制在 **≤15 分钟**可完成，超过就拆
+   - 写报告遵循"先骨架后血肉"：先 write 章节标题和小结，再逐章填充
+   - 子 agent 单次 `read` 文件 ≤30KB，更大的文件必须用 offset/limit 分块或 grep 定位
+   - 终稿 >100KB 时 L4 Auditor 必须走脚本核对（wc/grep/python）+ 分块读，禁止全文 read
+   - 并发上限收紧到 **≤2**（原为 3，进一步降低上下文峰值）
 
 ### task-state：唯一跨轮记忆
 
@@ -494,7 +518,9 @@ Reviewer 审查
 
 ## 并行数量限制
 
-同一时间**最多同时 spawn 3 个子 agent**（不含已完成的），避免触发 Token Plan 全局速率限制。超出 3 个时，分批 spawn（每批间隔 ≥ 5 分钟）。
+同一时间**最多同时 spawn 2 个子 agent**（不含已完成的），避免触发 Token Plan 全局速率限制和上下文峰值溢出。超出 2 个时，分批 spawn（每批间隔 ≥ 3 分钟）。
+
+> **v2.3.1 变更**：并发从 3 降到 2，配合子任务 ≤15 分钟拆分和大文件分块读，解决实战中出现的 spawn 后输出截断/终稿 137KB 一次读入导致审核子 agent 失败的问题。
 
 ---
 
@@ -505,6 +531,7 @@ Reviewer 审查
 | 1.0 | 2026-05-27 | 初始版本 |
 | 1.1 | 2026-05-27 | 双触发词 + 半自动模式 + 质量审核循环（3次打回） |
 | **2.0** | **2026-08-05** | **七角色架构 + 18步全流程 + 黑板机制 + 独立Reviewer + 精准返工 + 必要性门控 + 5条原则 + 8坑防护 + 5轮打回** |
+| **2.3.1** | **2026-08-12** | **实战复盘：①L4 终审必须派独立 sub-agent，PM 不得自审（裁判不能是运动员）；②不做模型分流，所有子 agent 统一默认模型；③大文件防溢出——单次 read ≤30KB、终稿>100KB 走脚本核对+分块读，禁止全文 read；④单任务 ≤15 分钟，超过就拆；⑤并发上限 3→2；⑥先骨架后血肉写作法。修复"终稿 137KB 一次读入导致 L4 审核子 agent 失败、PM 被迫自审"的问题。** |
 | **2.3** | **2026-08-10** | **MEA 三权分立（LongHorizon-Harness 启发）：Manager/Executor/Auditor 权限分离；独立 fresh-context Auditor（testing-reality-checker），看不到 Executor 推理；审计门禁（无审计证据不标 completed）；只读完整性保护；task-state 唯一跨轮记忆（只有 Auditor 能标 completed）；L1→L2 强制跨模块数字一致性 checker（testing-evidence-collector）；Executor 上下文跑完即弃；武汉医药O2O MEA 试点验证（7模块/15审计/6返工/L4终审P0=0）** |
 | **2.2** | **2026-08-07** | **武汉O2O实战复盘：强制 write 落盘+三件套验证、预-spawn SSOT 基线、子agent自检三项、续补三段式、心跳进度、绝对路径硬约束、完成即审 SOP、数字一致性预校验** |
 | **2.1** | **2026-08-05** | **实战复盘修复：强制文件落盘 + 黑板gate + 即时进度推送 + 完成事件即续跑 + Reviewer问题必须真返工** |
