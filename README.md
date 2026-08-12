@@ -1,87 +1,118 @@
-# MAF — Multi-Agent Framework v2.2
+# MAF — Multi-Agent Framework v2.3 (with MEA)
 
-> **运行环境**：[OpenClaw](https://github.com/openclaw) ≥ 0.9
-> **版本**：2.2.0 | **更新日期**：2026-08-07
-> **执行模式**：半自动（用户确认 DAG 后调度执行）
-> **理论来源**：《一文看懂 Multi-Agent：从任务分解到结果交付的 18 步全流程》
+> **运行环境**：[OpenClaw](https://github.com/openclaw/openclaw) ≥ 0.9（需要 `sessions_spawn`）
+> **版本**：2.3.0 | **更新日期**：2026-08-12
+> **执行模式**：半自动（确认 DAG 后调度执行）
+> **理论来源**：LongHorizon-Harness 的 MEA（Manager–Executor–Auditor）三权分立 + 多智能体协作 18 步全流程
 
 ---
 
 ## 这是什么？
 
-MAF 是运行在 OpenClaw 上的**多智能体协作 skill**。当你面对一个复杂任务（市场调研、战略规划、代码审查、深度分析等），单 agent 一次做不完时，MAF 会：
+MAF 是运行在 OpenClaw 上的**多智能体协作 skill**，带一个专门的 **PM Agent**（项目经理智能体）。面对复杂任务（市场调研、战略规划、代码审查、深度分析、财务测算等），它不是让一个 agent 硬扛，而是像真正的项目经理：
 
-1. 拆任务（Planner 拆 DAG）
-2. 并行调研（Research Agent）
-3. 并行执行（Execute Agents）
-4. 独立审查（Reviewer Agent，审执分离）
-5. 仲裁数字（Checker Agent）
-6. 汇总交付（PM Orchestrator）
+1. **拆任务**（Planner 拆 DAG）
+2. **派专业角色**（从 215 个中文角色库匹配）
+3. **独立审计**（每个模块由 fresh-context 的 Auditor 独立核查，PM 不自己给自己打分）
+4. **仲裁数字**（L2 跨模块一致性 checker，专治"模块 A 说 4800、模块 B 说 8500"）
+5. **汇总交付**（终稿 + 全部模块原文 + 审计报告 + 机读 json）
 
-**就像一个真正的项目经理带团队干活，而不是一个人假装全干了。**
+### v2.3 的核心：MEA 三权分立
+
+借鉴阿里高德 LongHorizon-Harness（arXiv:2608.01964），把"一个会话既干活又自己评估"拆成三个角色：
+
+| 角色 | 谁来当 | 能做什么 | 上下文 |
+|------|--------|---------|--------|
+| **Manager** | PM Agent（你部署的这个） | 读审计状态、派下一轮任务；**不能改业务文件、不能自己标完成** | 长期，累积审计报告 |
+| **Executor** | 215 角色库中的业务专家 | **唯一能写 modules/*.md** 的人；跑完 raw context 丢弃 | 每轮 fresh isolated sub-agent |
+| **Auditor** | `testing-reality-checker`（角色库已有） | **唯一能把任务标 completed**；只读业务文件 + 验收标准，写 audit 报告 | fresh context，**看不到 Executor 的推理** |
+
+**铁律：没有 Auditor 签字的审计证据，任何模块不得标 completed。** Executor 自报"做完了"不算数。
+
+在 2026-08-10 武汉医药 O2O 调研试点中，独立 Auditor 抓出了 PM 自审极可能漏过的硬伤：M6 财务利润虚高 3.85 倍、M7 设计了"AI 自动审方"违反药师法、M3 法规文号错误、M2 市占率合计 130%、L2 跨模块零数字冲突。
 
 ---
 
 ## 30 秒快速开始
 
-### 安装
+### 0. 前提
+- 已安装并初始化 OpenClaw
+- 已创建一个使用本 workspace 的 agent（叫 PM / 项目经理 / 任意名字）
+- 模型由你自己在 OpenClaw 里配置（MAF 不绑定任何模型）
+- AnySearch API key（可选，匿名也能用但有速率限制）
+
+### 1. 下载 & 安装
 
 ```bash
-git clone https://github.com/<your-name>/openclaw-maf.git
+git clone https://github.com/838997125/openclaw-maf.git
 cd openclaw-maf
 bash install.sh
 ```
 
-### 使用
+安装脚本会自动：
+- 把 `skills/maf`、`skills/maf-trigger` 复制到 `~/.openclaw/workspace-pm/skills/`
+- 把 PM 人格文件（AGENTS.md/SOUL.md/IDENTITY.md/TOOLS.md/HEARTBEAT.md）模板复制到 `~/.openclaw/workspace-pm/`（不覆盖你已有的）
+- 克隆 215 角色库到 `~/agency-agents-zh/`（可通过 `AGENCY_AGENTS_HOME` 改路径）
+- 生成 `maf-env.sh`
+- 提示你安装 AnySearch
 
-在 OpenClaw 对话中说：
+### 2. 自检
+
+```bash
+bash scripts/doctor.sh
+```
+
+应输出 `✅ All checks passed`。有 fail 按提示修。
+
+### 3. 配 AnySearch API key（可选）
+
+```bash
+# 在 OpenClaw 里对任意 agent 说：
+clawhub install anysearch
+# 然后编辑 ~/.openclaw/workspace/skills/anysearch/.env 填 ANYSEARCH_API_KEY
+```
+
+没有 key 也能跑（匿名低配额），但调研类任务会明显变慢。
+
+### 4. 配你的模型
+
+在 OpenClaw 的 agent 配置里，把 PM agent 的模型设成你自己的（任意支持 tool calling 的模型均可，推荐 Claude / GPT-5 / Gemini / DeepSeek / Qwen 等）。MAF 本身不挑模型——论文也证明"框架增益是系统属性，不是模型属性"。
+
+### 5. 使用
+
+重启 OpenClaw（或 reload skills），切到 PM agent，对话里说：
 
 ```
-启动多智能体：帮我做一份武汉地区医药O2O市场调研
+启动多智能体：帮我做一份武汉医药 O2O 市场调研
 ```
 
 或者：
 
 ```
-/maf 帮我分析三个短视频创业方向
+/maf 分析三个短视频创业方向，给我一份可决策的报告
 ```
 
 MAF 会：
-1. 先输出一份 DAG 计划给你确认
-2. 你确认后并行 spawn 多个子 agent
-3. 每个模块完成后即时汇报
-4. 最终交付完整报告 + 所有模块原文 + 数字基准
+1. 先回一份需求确认单 + 角色匹配表 + DAG 计划给你确认
+2. 你说"开始"后，并行 spawn 业务专家
+3. 每个模块完成，独立 Auditor 自动审核、打回或放行（你能看到每次打回）
+4. L2 跨模块数字一致性检查
+5. L3 汇总、L4 终审
+6. 交付完整报告
 
 ---
 
-## 核心能力
+## 环境变量
 
-- **七角色分工**：Orchestrator / Planner / Research / Execute / Reviewer / Tools / User
-- **18 步全流程**：从对齐到交付
-- **黑板机制**：所有 agent 共享 `pm_shared_data.json`，不丢信息
-- **审执分离**：Reviewer 独立打分，不自己改自己的卷子
-- **精准返工**：哪个模块有问题只重做那个，不整体重来
-- **数字一致性 Checker**：跨模块数字冲突时自动仲裁，产出 SSOT
-- **强制文件落盘**：>3000 字必须 write 文件，不靠消息历史（避免截断）
-- **并行上限 3**：不触发速率限制
-- **5 轮打回保护**：含第 3 轮风险接受声明
+| 变量 | 默认值 | 说明 |
+|------|--------|------|
+| `OPENCLAW_HOME` | `~/.openclaw` | OpenClaw 配置根目录 |
+| `PM_WORKSPACE` | `$OPENCLAW_HOME/workspace-pm` | PM agent 的 workspace 路径 |
+| `AGENCY_AGENTS_HOME` | `~/agency-agents-zh` | 215 角色库克隆位置 |
+| `AGENCY_REPO` | `https://github.com/jnMetaCode/agency-agents-zh.git` | 角色库仓库地址 |
+| `ANYSEARCH_HOME` | `~/.openclaw/workspace/skills/anysearch` | AnySearch skill 路径 |
 
----
-
-## 实战案例
-
-**examples/wuhan-o2o** 是一个完整的真实项目：
-
-- 客户：武汉某医药电商（30 线上店 + 20 线下店）
-- 目标：3 年全域 O2O 覆盖战略
-- 投入：10 个子 agent、6 小时、25-30 万 token
-- 产出：
-  - 81KB / 1313 行最终报告
-  - 10 份模块原文（531KB）
-  - SSOT 数字基准（仲裁了 6 处冲突）
-  - 完整会话归档（5.6MB / 12 sessions / 515 messages）
-
-详见 `examples/wuhan-o2o/README.md`。
+如果你用非标准路径，装之前 export 这些变量即可。
 
 ---
 
@@ -89,67 +120,88 @@ MAF 会：
 
 ```
 openclaw-maf/
-├── README.md                           # 本文件
-├── install.sh                          # 一键安装脚本
+├── install.sh                          # 一键安装
 ├── LICENSE
+├── README.md                           # 本文件
+├── scripts/
+│   └── doctor.sh                       # 环境自检
+├── docs/
+│   ├── DEPLOYMENT.md                   # 详细部署/排错
+│   └── UPGRADE-v2.3.md                 # v2.2 → v2.3 升级要点
 ├── skills/
 │   ├── maf/                            # 核心框架 skill
-│   │   ├── SKILL.md                    # 框架总览（触发词、7角色、18步）
-│   │   ├── PM-ORCHESTRATOR-SKILL.md    # PM 详细执行手册（v2.2 强制规则）
+│   │   ├── SKILL.md                    # 框架总览（触发词、MEA、七角色、18 步）
+│   │   ├── PM-ORCHESTRATOR-SKILL.md    # PM 详细执行手册（918 行规则）
 │   │   ├── README.md
+│   │   ├── mea/                        # MEA 可复用 prompt 模板
+│   │   │   ├── executor-prompt-template.md
+│   │   │   ├── auditor-prompt-template.md
+│   │   │   └── README.md
 │   │   ├── executor/engine.ts
-│   │   ├── roles/
-│   │   │   ├── scanner.ts
-│   │   │   └── dag_builder.ts
+│   │   ├── roles/{scanner,dag_builder}.ts
 │   │   └── pm-orchestrator.ts
-│   └── maf-trigger/                    # 触发器 skill
+│   └── maf-trigger/                    # 触发词 skill
 │       └── SKILL.md
-├── docs/
-│   ├── USAGE.md                        # 详细使用指南
-│   ├── ARCHITECTURE.md                 # 架构说明
-│   └── UPGRADE-v2.2.md                 # v2.1 → v2.2 升级要点
+├── pm-workspace-template/              # PM agent 人格/规则文件模板
+│   ├── AGENTS.md                       # 工作流硬规则（4 道审核门槛、打回透明等）
+│   ├── SOUL.md                         # PM 人格 + MEA 硬规则 + 搜索工具规则 + 钉钉规则
+│   ├── IDENTITY.md
+│   ├── TOOLS.md
+│   ├── HEARTBEAT.md
+│   └── USER.md                         # 模板，请改成你自己的信息
 └── examples/
-    └── wuhan-o2o/                      # 真实实战案例
-        ├── README.md
-        ├── final-report.md
-        ├── pm_shared_data.json
-        └── modules/
+    ├── wuhan-o2o/                      # v2.2 旧实战案例（保留参考）
+    └── wuhan-o2o-mea/                  # v2.3 MEA 试点完整产物
+        ├── final/wuhan-o2o-report.md   # 15182 字终稿
+        ├── modules/M1-M7*.md           # 7 份模块原文
+        ├── audits/audit-*.md           # 15 份独立审计报告
+        ├── pm_shared_data.json         # 黑板 + SSOT
+        └── wuhan-o2o-report.summary.json
 ```
 
 ---
 
-## v2.2 新功能（2026-08-07）
+## 何时启用 MEA（vs 普通 MAF）
 
-基于武汉医药O2O战略报告实战复盘，修复了 8 个 v2.1 仍存在的问题：
+不是所有任务都要三权分立。按下面判断：
 
-1. **强制 write-tool 落盘**：>3000 字必须分块写文件，消息回执 ≤300 字
-2. **三件套验证**：完成事件后 `ls -la` + `wc -c` + `tail -30` 不信回执
-3. **预-spawn SSOT 基线**：数字敏感任务先定 anchor 数字再 spawn
-4. **子 agent 自检三项**：市占率/单节点产能/回收期常识校验
-5. **续补三段式**：断点20字 + ≤5项清单 + ≤1500字硬上限
-6. **3 分钟心跳**：不让用户干等
-7. **绝对路径硬约束**：output_path 必须以 `/` 开头
-8. **完成即归档 FULL 版**：不事后回溯
+| 任务特征 | 推荐模式 |
+|---------|---------|
+| 数字敏感（财务测算、市场规模、对账） | **MEA** |
+| 合规敏感（医药/金融/法律/数据隐私） | **MEA** |
+| 多模块长程（≥5 个 L1 模块、总字数 ≥3 万） | **MEA** |
+| 跨模块数字必须一致 | **MEA**（L2 checker 强制） |
+| 简单单模块分析 / 一次性问答 | 普通 MAF |
 
-详见 `docs/UPGRADE-v2.2.md`。
+PM 会在 Phase 0 自动判断并告诉你走哪条路径。
 
 ---
 
-## 系统要求
+## 用自己的模型 / 自己的搜索 key
 
-- OpenClaw ≥ 0.9（需要 `sessions_spawn` 支持）
-- Node.js ≥ 18（部分 TS 工具）
-- 建议配置：AnySearch skill（用于联网调研）
+- **模型**：MAF 不调用任何模型 API，所有 spawn 都走 OpenClaw 的 agent 配置。你在 OpenClaw 里给 PM agent 配什么模型，Executor/Auditor sub-agent 就继承什么模型（也可在 spawn 时单独指定）。
+- **AnySearch key**：编辑 `~/.openclaw/workspace/skills/anysearch/.env`，填入 `ANYSEARCH_API_KEY=xxx`。没 key 也能匿名用，但配额低。
+
+---
+
+## 升级
+
+```bash
+cd openclaw-maf
+git pull
+bash install.sh   # 会覆盖 skills/ 但不覆盖你已改过的 AGENTS.md/SOUL.md/USER.md
+bash scripts/doctor.sh
+```
 
 ---
 
 ## 许可证
 
-MIT
+MIT。角色库（`~/agency-agents-zh`）遵循其原仓库许可。
 
 ---
 
 ## 反馈
 
-- Issue: 提交 bug 和功能请求
+- Issue：bug / 功能请求
 - 实战案例：欢迎把你用 MAF 做的项目 PR 到 `examples/`

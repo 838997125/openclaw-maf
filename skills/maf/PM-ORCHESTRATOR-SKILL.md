@@ -147,7 +147,7 @@ Reviewer/checker 标记为 P0/P1 的事实错误、数字矛盾、逻辑断裂�
 
 ### 规则 9：绝对路径硬约束
 
-- 所有 output_path 必须以 `/` 开头（如 `/root/.openclaw/workspace-pm/outputs/xxx/`）
+- 所有 output_path 必须以 `/` 开头（如 `$HOME/.openclaw/workspace-pm/outputs/xxx/`）
 - prompt 中在任务描述开头和输出要求段落**重复2次**完整绝对路径
 - 不允许使用\"当前目录\"、\"./\"、\"outputs/xxx\"等相对路径
 - Phase 1 先 `mkdir -p` 创建目录
@@ -250,9 +250,9 @@ Reviewer 报告中标记为 P0/P1 的事实错误、逻辑矛盾、遗漏：
 
 | 资源 | 路径 |
 |------|------|
-| 角色库根目录 | `/home/zyq/agency-agents-zh` |
-| 角色列表 | `/home/zyq/agency-agents-zh/AGENT-LIST.md` |
-| 工作流引擎参考 | `/home/zyq/agency-orchestrator-main` |
+| 角色库根目录 | `$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)` |
+| 角色列表 | `$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)/AGENT-LIST.md` |
+| 工作流引擎参考 | `$HOME/agency-orchestrator-main (optional, 仅参考)` |
 | 黑板文件 | 运行时创建 `pm_shared_data.json` |
 
 ---
@@ -403,7 +403,7 @@ Planner 输出后，你必须做一次**隐性依赖扫描**：
 
 ### 3.1 读取角色库
 
-读取 `/home/zyq/agency-agents-zh/AGENT-LIST.md`，为每个 DAG 节点匹配最合适的角色。
+读取 `$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)/AGENT-LIST.md`，为每个 DAG 节点匹配最合适的角色。
 
 ### 3.2 输出角色匹配表
 

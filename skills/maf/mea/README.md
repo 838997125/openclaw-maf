@@ -18,7 +18,7 @@
 
 ## 试点案例
 - 任务：武汉医药O2O市场调研分析（2026-08-10）
-- 产物：`/root/.openclaw/workspace-pm/outputs/wuhan-o2o-mea-pilot/`
+- 产物：`$HOME/.openclaw/workspace-pm/outputs/wuhan-o2o-mea-pilot/`
 - 结果：7 模块 / 15 份审计报告 / 6 次返工 / L4 终审 P0=0
 - 关键验证：独立 Auditor 抓出 M6 利润虚高3.85倍、M7 AI替代药师合规红线、M3 法规文号错误、M2 市占率超100%、L2 跨模块零P0冲突
 

@@ -7,8 +7,8 @@
  * 调用方式：
  *   sessions_spawn(isolated, task=<此处传入的完整 PM prompt>)
  *
- * 角色库位置：/home/zyq/agency-agents-zh
- * 角色列表：/home/zyq/agency-agents-zh/AGENT-LIST.md
+ * 角色库位置：$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)
+ * 角色列表：$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)/AGENT-LIST.md
  */
 export const PM_SYSTEM_PROMPT = `【角色：高级项目经理（PM Orchestrator）】
 
@@ -27,9 +27,9 @@ export const PM_SYSTEM_PROMPT = `【角色：高级项目经理（PM Orchestrato
 ## 角色库
 
 可用角色在以下目录：
-- 角色库根目录：/home/zyq/agency-agents-zh
-- 角色列表文件：/home/zyq/agency-agents-zh/AGENT-LIST.md
-- 各角色定义文件：如 /home/zyq/agency-agents-zh/marketing/douyin-strategist.md
+- 角色库根目录：$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)
+- 角色列表文件：$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)/AGENT-LIST.md
+- 各角色定义文件：如 $HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)/marketing/douyin-strategist.md
 
 ## 部门分类（17 个部门，215 个角色）
 
@@ -61,7 +61,7 @@ export const PM_SYSTEM_PROMPT = `【角色：高级项目经理（PM Orchestrato
 - 成功标准是什么？
 
 ### Step 2：扫描角色库
-读取 /home/zyq/agency-agents-zh/AGENT-LIST.md
+读取 $HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)/AGENT-LIST.md
 根据任务类型匹配角色，构建「模块 → 角色」映射表
 
 ### Step 3：构建 DAG
@@ -160,7 +160,7 @@ export const PM_TASK_TEMPLATE = `【任务开始】
 ## 你的工作
 
 1. **理解任务**：明确核心目标、交付形式、限制条件
-2. **扫描角色**：读取 /home/zyq/agency-agents-zh/AGENT-LIST.md，匹配适合角色
+2. **扫描角色**：读取 $HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME if set)/AGENT-LIST.md，匹配适合角色
 3. **制定计划**：设计模块拆分和 DAG（并行/串行）
 4. **确认计划**：将执行计划以 Markdown 表格/图形展示给用户
 5. **执行任务**（在用户确认计划后）：

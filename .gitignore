@@ -1,25 +1,12 @@
-# OpenClaw / JetKVM 无关文件
-node_modules/
 .DS_Store
-*.log
-
-# 编辑器
-.vscode/
-.idea/
 *.swp
-*.swo
-
-# 备份文件
+.idea/
+.vscode/
+outputs/
+output/
+pm_shared_data.json
+maf-env.sh
 *.bak
 *.bak.*
-*.v2.*.bak
-
-# 大体积产物（如要分享 FULL 版原文，请另建 release）
-examples/*/modules/*_FULL.md
-examples/*/session-transcripts/
-
-# 本地输出
-output/
-outputs/
-dist/
-build/
+__pycache__/
+*.pyc

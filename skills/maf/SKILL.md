@@ -30,7 +30,7 @@ description: 多智能体协作框架 v2.3。当用户说"启动多智能体"、
 
 ```
 ## 输出要求（强制）
-1. 用 write 工具把完整报告写到绝对路径：/root/.openclaw/workspace-pm/outputs/<task>/modules/<TASK_ID>.md
+1. 用 write 工具把完整报告写到绝对路径：$HOME/.openclaw/workspace-pm/outputs/<task>/modules/<TASK_ID>.md
 2. 写作过程：每写完一章立即 write 一次（增量写），不要等到最后一次性输出
 3. 完成后在消息中只回复三行：\   - 已保存：<绝对路径>
    - 字节数：<wc -c 实际值>

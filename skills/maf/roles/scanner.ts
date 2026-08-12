@@ -14,7 +14,8 @@ export interface RoleEntry {
   source: '翻译' | '原创';
 }
 
-const AGENTS_DIR = '/home/zyq/agency-agents-zh';
+const AGENTS_DIR = process.env.AGENCY_AGENTS_HOME
+  || (require('os').homedir() + '/agency-agents-zh');
 const AGENT_LIST_PATH = resolve(AGENTS_DIR, 'AGENT-LIST.md');
 
 /**

@@ -222,8 +222,8 @@ PM 整合后通过 main 发送完整报告，包含：
 | 资源 | 路径 |
 |------|------|
 | PM Orchestrator Skill v2.0 | `~/.openclaw/workspace/skills/maf/PM-ORCHESTRATOR-SKILL.md` |
-| 角色库 | `/home/zyq/agency-agents-zh` |
-| 角色列表 | `/home/zyq/agency-agents-zh/AGENT-LIST.md` |
+| 角色库 | `$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME)` |
+| 角色列表 | `$HOME/agency-agents-zh (or $AGENCY_AGENTS_HOME)/AGENT-LIST.md` |
 | AnySearch Skill | `~/.openclaw/workspace/skills/anysearch/` |
 
 ---
