@@ -56,14 +56,20 @@ if [ -d "$SCRIPT_DIR/pm-workspace-template" ]; then
   fi
 fi
 
-# 3. clone 215-role agent library
+# 3. install role agent library (bundled copy preferred; network clone as fallback)
+VENDOR_ROLE_LIB="$SCRIPT_DIR/vendor/agency-agents-zh"
 if [ -d "$AGENCY_AGENTS_HOME/.git" ]; then
   echo "📚 Role library already exists at $AGENCY_AGENTS_HOME — pulling latest ..."
   git -C "$AGENCY_AGENTS_HOME" pull --ff-only || echo "   ⚠️ pull failed, keep current version"
 elif [ -d "$AGENCY_AGENTS_HOME" ]; then
   echo "📚 $AGENCY_AGENTS_HOME exists but is not a git repo — leave it as is."
+elif [ -f "$VENDOR_ROLE_LIB/AGENT-LIST.md" ]; then
+  echo "📚 Copying bundled role library to $AGENCY_AGENTS_HOME ..."
+  mkdir -p "$AGENCY_AGENTS_HOME"
+  cp -a "$VENDOR_ROLE_LIB/." "$AGENCY_AGENTS_HOME/"
+  echo "   ✅ Bundled copy installed (offline, no network needed)."
 else
-  echo "📚 Cloning 215-role library to $AGENCY_AGENTS_HOME ..."
+  echo "📚 Bundled copy missing — cloning role library to $AGENCY_AGENTS_HOME ..."
   git clone --depth 1 "$AGENCY_REPO" "$AGENCY_AGENTS_HOME"
 fi
 

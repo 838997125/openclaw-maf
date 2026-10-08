@@ -52,7 +52,7 @@ bash install.sh
 安装脚本会自动：
 - 把 `skills/maf`、`skills/maf-trigger` 复制到 `~/.openclaw/workspace-pm/skills/`
 - 把 PM 人格文件（AGENTS.md/SOUL.md/IDENTITY.md/TOOLS.md/HEARTBEAT.md）模板复制到 `~/.openclaw/workspace-pm/`（不覆盖你已有的）
-- 克隆 215 角色库到 `~/agency-agents-zh/`（可通过 `AGENCY_AGENTS_HOME` 改路径）
+- 把内置的 314 个角色定义（`vendor/agency-agents-zh/`）复制到 `~/agency-agents-zh/`（可通过 `AGENCY_AGENTS_HOME` 改路径）；无需联网拉取第三方仓库
 - 生成 `maf-env.sh`
 - 提示你安装 AnySearch
 
@@ -108,8 +108,8 @@ MAF 会：
 |------|--------|------|
 | `OPENCLAW_HOME` | `~/.openclaw` | OpenClaw 配置根目录 |
 | `PM_WORKSPACE` | `$OPENCLAW_HOME/workspace-pm` | PM agent 的 workspace 路径 |
-| `AGENCY_AGENTS_HOME` | `~/agency-agents-zh` | 215 角色库克隆位置 |
-| `AGENCY_REPO` | `https://github.com/jnMetaCode/agency-agents-zh.git` | 角色库仓库地址 |
+| `AGENCY_AGENTS_HOME` | `~/agency-agents-zh` | 角色库安装位置（默认复制内置副本） |
+| `AGENCY_REPO` | `https://github.com/jnMetaCode/agency-agents-zh.git` | 仅在 vendor 副本缺失时联网克隆用的备用地址 |
 | `ANYSEARCH_HOME` | `~/.openclaw/workspace/skills/anysearch` | AnySearch skill 路径 |
 
 如果你用非标准路径，装之前 export 这些变量即可。
@@ -121,6 +121,11 @@ MAF 会：
 ```
 openclaw-maf/
 ├── install.sh                          # 一键安装
+├── vendor/
+│   └── agency-agents-zh/               # 内置角色库（314 个角色定义，离线可装）
+│       ├── LICENSE                     # MIT，Copyright (c) jnMetaCode 等上游作者
+│       ├── AGENT-LIST.md / CATALOG.md
+│       └── <部门目录>/<role-id>.md
 ├── LICENSE
 ├── README.md                           # 本文件
 ├── scripts/
@@ -197,7 +202,7 @@ bash scripts/doctor.sh
 
 ## 许可证
 
-MIT。角色库（`~/agency-agents-zh`）遵循其原仓库许可。
+本项目 MIT。内置角色库（`vendor/agency-agents-zh/`）来自上游 [jnMetaCode/agency-agents-zh](https://github.com/jnMetaCode/agency-agents-zh)，遵循其 MIT 许可；其 LICENSE 与版权声明（Copyright (c) 2025 Michael Sitarzewski；Copyright (c) 2026 jnMetaCode）随副本一并保留。
 
 ---
 

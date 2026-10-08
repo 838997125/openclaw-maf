@@ -22,7 +22,7 @@ bash install.sh
 1. 把 `skills/maf`、`skills/maf-trigger` 复制到 `~/.openclaw/workspace-pm/skills/`
 2. 把 PM 人格文件模板（AGENTS.md / SOUL.md / IDENTITY.md / TOOLS.md / HEARTBEAT.md）复制到 `~/.openclaw/workspace-pm/`（**已存在的不覆盖**）
 3. 复制 `USER.md` 模板（仅当该文件不存在时）
-4. 克隆 215 角色库到 `~/agency-agents-zh/`（已存在则 pull）
+4. 复制内置角色库（`vendor/agency-agents-zh/`）到 `~/agency-agents-zh/`（已存在则保留/ pull，vendor 缺失时才联网克隆）
 5. 生成 `~/.openclaw/workspace-pm/maf-env.sh`
 
 ## 3. 自检
@@ -111,7 +111,7 @@ Windows（WSL）用户：把上述路径换成 WSL 内的 Linux 路径即可。M
 ## 常见问题
 
 ### Q：doctor 说找不到角色库
-A：`git clone https://github.com/jnMetaCode/agency-agents-zh.git ~/agency-agents-zh`，或设置 `AGENCY_AGENTS_HOME`。
+A：重新跑一次 `bash install.sh` 即可（内置副本在 `vendor/agency-agents-zh/`，离线可装），或设置 `AGENCY_AGENTS_HOME` 指向你的角色库目录。
 
 ### Q：doctor 说 Auditor 角色缺失
 A：你的角色库版本太旧。`cd ~/agency-agents-zh && git pull`。需要 `testing/testing-reality-checker.md` 和 `testing/testing-evidence-collector.md`。
@@ -129,7 +129,7 @@ A：在 OpenClaw 的 agent 配置里为 sub-agent 指定模型；或让 PM 在 s
 A：不能。MAF Executor/Auditor 都是从这个库加载角色定义的。你也可以把它 clone 到任意位置并 `export AGENCY_AGENTS_HOME=...`。
 
 ### Q：安装脚本报 git clone 超时
-A：国内网络访问 GitHub 不稳定时，用代理：`git config --global http.proxty http://...` 或用镜像源。
+A：v2.3.2 起角色库已内置在 `vendor/` 中，正常安装不需要联网克隆。仅当 vendor 副本缺失时才会克隆，可用代理或镜像源。
 
 ### Q：怎么卸载？
 ```bash

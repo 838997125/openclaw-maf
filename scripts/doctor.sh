@@ -49,7 +49,7 @@ if [ -f "$AGENCY_AGENTS_HOME/AGENT-LIST.md" ]; then
   roles=$(grep -cE '^\| `[a-z0-9-]+`' "$AGENCY_AGENTS_HOME/AGENT-LIST.md" 2>/dev/null || echo 0)
   check ok "~$roles roles indexed"
 else
-  check fail "Role library missing at $AGENCY_AGENTS_HOME (run: git clone https://github.com/jnMetaCode/agency-agents-zh.git $AGENCY_AGENTS_HOME)"
+  check fail "Role library missing at $AGENCY_AGENTS_HOME (run install.sh — a copy is bundled in vendor/agency-agents-zh)"
 fi
 # auditor role specifically
 for aud in testing-reality-checker testing-evidence-collector; do
